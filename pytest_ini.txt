@@ -1,0 +1,203 @@
+1. What is pytest.ini?
+
+pytest.ini is a configuration file for Pytest.
+
+Instead of repeatedly passing options in the command line, we can put them in pytest.ini.
+
+For example, instead of:
+
+pytest -v -s
+
+every time, we can configure Pytest to use those options automatically.
+
+A typical project can look like:
+
+pytest_project/
+│
+├── pytest.ini
+├── conftest.py
+│
+└── tests/
+    ├── test_login.py
+    └── test_payment.py
+
+
+2. Basic pytest.ini
+
+The file starts with:
+
+[pytest]
+
+Example:
+
+[pytest]
+addopts = -v
+
+Now when you run:
+
+pytest
+
+Pytest automatically behaves as if you ran:
+
+pytest -v
+3. Register Custom Markers
+    This is what you already used.
+
+[pytest]
+markers =
+    smoke: smoke tests
+    regression: regression tests
+
+Then in Python:
+
+import pytest
+
+@pytest.mark.smoke
+def test_login():
+    assert True
+
+Now Pytest understands smoke and won't give you the PytestUnknownMarkWarning.
+
+
+4. testpaths
+
+You can tell Pytest where your tests are located.
+
+Suppose your project is:
+
+pytest_project/
+│
+├── pytest.ini
+│
+└── tests/
+    ├── test_login.py
+    ├── test_search.py
+    └── test_payment.py
+
+You can configure:
+
+[pytest]
+testpaths = tests
+
+Now:
+
+pytest
+
+will look inside the tests directory for tests.
+
+This is very useful in larger projects.
+
+5. addopts
+
+addopts lets you specify default command-line options.
+
+For example:
+
+[pytest]
+addopts = -v -s
+
+Now simply:
+
+pytest
+
+is equivalent to approximately:
+
+pytest -v -s
+
+Why is this useful?
+
+You don't have to remember or repeatedly type common options.
+
+
+7. Example Project
+
+Imagine:
+
+pytest_project/
+│
+├── pytest.ini
+│
+├── conftest.py
+│
+└── tests/
+    ├── test_login.py
+    └── test_payment.py
+pytest.ini
+[pytest]
+
+testpaths = tests
+
+addopts = -v -s
+
+markers =
+    smoke: smoke tests
+    regression: regression tests
+
+test_login.py
+import pytest
+
+
+@pytest.mark.smoke
+def test_login():
+    print("Login test")
+    assert True
+test_payment.py
+import pytest
+
+
+@pytest.mark.regression
+def test_payment():
+    print("Payment test")
+    assert True
+
+Now simply run:
+
+pytest
+
+Pytest will:
+
+Look inside tests/
+Run with verbose output
+Show print() statements
+Understand smoke
+Understand regression
+
+
+pytest.ini
+
+Used mainly for Pytest configuration.
+
+[pytest]
+addopts = -v
+testpaths = tests
+conftest.py
+
+Used mainly for fixtures and hooks.
+
+import pytest
+
+@pytest.fixture
+def browser():
+    ...
+
+Easy way to remember:
+
+pytest.ini → Configure Pytest
+conftest.py → Share fixtures/hooks
+
+
+9. Where should pytest.ini be placed?
+
+Normally, put it at the root of your project.
+
+For example:
+
+pytest_project/
+│
+├── pytest.ini       ← here
+├── conftest.py
+└── tests/
+    ├── test_login.py
+    └── test_search.py
+
+This is the clean structure we'll use when we build your automation framework.

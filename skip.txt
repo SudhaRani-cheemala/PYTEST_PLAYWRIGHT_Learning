@@ -1,0 +1,40 @@
+1. What is skip?
+
+skip means:
+
+Don't execute this test.
+
+You use it when a test should not run under the current condition.
+Example:
+
+import pytest
+
+@pytest.mark.skip(reason="Feature is not ready")
+def test_payment():
+    print("Testing payment")
+
+When you run:
+
+pytest -v
+
+you'll see something like:
+
+test_payment SKIPPED
+
+The test is not executed.
+
+2. Why do we skip tests?
+
+Common situations:
+
+Feature is not implemented yet
+Test is temporarily broken
+Environment is unavailable
+Test is not applicable
+Functionality is under development
+
+For example:
+
+@pytest.mark.skip(reason="Payment feature is under development")
+def test_payment():
+    pass

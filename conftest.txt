@@ -1,0 +1,47 @@
+conftest.py is a special Pytest file used to store reusable fixtures and Pytest configuration.
+
+The biggest benefit is:
+
+You define a fixture once in conftest.py, and multiple test files can use it without importing it.
+
+This becomes very important with Playwright.
+
+
+Q1. What is conftest.py?
+
+"conftest.py is a special Pytest configuration file used to define reusable fixtures and hooks. Fixtures defined in it can be automatically discovered by Pytest and shared across multiple test files."
+
+Q2. Do we need to import fixtures from conftest.py?
+
+No.
+
+Pytest automatically discovers them.
+
+Q3. Why do we use conftest.py?
+
+"To centralize reusable fixtures and configuration, avoid duplicate code, and make the test framework easier to maintain."
+
+Q4. Can we have multiple conftest.py files?
+
+Yes.
+
+example"
+project/
+│
+├── conftest.py
+│
+├── tests/
+│   ├── conftest.py
+│   ├── test_login.py
+│   └── test_payment.py
+
+
+One thing to remember
+
+Fixture = reusable setup/resource
+
+conftest.py = central place to keep reusable fixtures
+
+Playwright = we'll use conftest.py heavily for browser/page setup
+
+Once this works, the next topic is Skip and XFail, and then we'll quickly finish the remaining Pytest topics and move to Playwright.

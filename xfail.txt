@@ -1,0 +1,222 @@
+What is XFail?
+
+xfail means:
+
+We expect this test to fail.
+
+For example, suppose there is a known bug in the application.
+
+
+import pytest
+
+@pytest.mark.xfail(reason="Known login bug")
+def test_login():
+    assert 1 == 2
+
+Why use XFail?
+
+Imagine your development team knows:
+
+"There is a known bug in the payment calculation."
+
+You still want to keep the test in your automation suite.
+
+Instead of deleting the test:   
+
+
+def test_payment():
+    assert actual == expected
+
+@pytest.mark.xfail(reason="Known payment calculation bug")
+def test_payment():
+    assert actual == expected    
+
+    Now the test remains in your framework, but Pytest understands that the failure is expected.
+
+
+ Skip vs XFail
+
+This is very important for interviews.
+
+Skip	XFail
+Test is not executed	Test is executed
+We don't want to run it	We expect it to fail
+Result = SKIPPED	Result = XFAIL
+Useful for unavailable/not-applicable tests	Useful for known bugs
+Easy way to remember:
+
+Skip → Don't run it
+XFail → Run it, but I expect it to fail
+
+
+What happens if XFail unexpectedly passes?
+
+This is an interesting interview point.
+
+Suppose:
+
+@pytest.mark.xfail(reason="Known bug")
+def test_login():
+    assert 1 == 1
+
+The test actually passes.
+
+Pytest can report it as:
+
+XPASS
+
+Meaning:
+
+Expected failure, but the test passed.
+
+This can be useful because it may indicate that the underlying bug has been fixed.
+
+
+Real Automation Example
+
+Imagine you're testing an e-commerce application.
+
+Payment feature unavailable
+@pytest.mark.skip(reason="Payment environment is unavailable")
+def test_payment():
+    pass
+
+You don't want to run the test.
+
+Known payment bug
+@pytest.mark.xfail(reason="Known payment calculation defect")
+def test_payment_calculation():
+    assert actual_amount == expected_amount
+
+You want the test to run, but you already know it currently fails.
+
+
+
+Interview Questions
+Q1. What is skip in Pytest?
+
+"skip is used to prevent a test from executing. It is useful when a test is temporarily unavailable, not applicable, or a required feature/environment is unavailable."
+
+Q2. What is skipif?
+
+"skipif conditionally skips a test based on a condition."
+
+Example:
+
+@pytest.mark.skipif(condition, reason="...")
+Q3. What is XFail?
+
+"xfail is used when we expect a test to fail, usually because of a known defect or incomplete functionality."
+
+Q4. What is the difference between skip and xfail?
+
+"skip means the test is not executed, whereas xfail means the test is executed and we expect it to fail."
+
+Q5. What is XPASS?
+
+"XPASS occurs when a test marked as XFail unexpectedly passes."
+
+🎯 Small Practice
+
+Create this file:
+
+import pytest
+
+
+@pytest.mark.skip(reason="Feature not ready")
+def test_payment():
+    assert 1 == 1
+
+
+@pytest.mark.xfail(reason="Known bug")
+def test_login():
+    assert 1 == 2
+
+
+def test_homepage():
+    assert 1 == 1
+
+Run:
+
+pytest -v
+
+You should see approximately:
+
+test_payment     SKIPPED
+test_login       XFAIL
+test_homepage    PASSED
+Remember these three:
+SKIP  → Don't run
+XFAIL → Run, expected to fail
+XPASS → Expected failure, but it passed
+
+Once you've practiced this, the next topic is pytest.ini configuration. After that, we'll cover Hooks and Reports, then move into Playwright, which is the major part of your interview preparation.
+
+i got below error
+
+=============================================================== ERRORS ================================================================
+____________________________________________________ ERROR collecting test_skip.py ____________________________________________________
+Using pytest.skip outside of a test will skip the entire module. If that's your intention, pass allow_module_level=True. If you want to skip a specific test or an entire class, use the @pytest.mark.skip or @pytest.mark.skipif decorators.
+======================================================= short test summary info =======================================================
+ERROR test_skip.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+========================================================== 1 error in 0.21s ===========================================================
+(venv) PS C:\Users\DELL\Desktop\pytest_project> 
+
+Yes — this error usually means you accidentally used pytest.skip() as a normal function, instead of using the @pytest.mark.skip decorator.
+
+The error specifically says:
+
+Using pytest.skip outside of a test will skip the entire module.
+
+✅ Correct code
+
+Make sure your test_skip.py looks exactly like this:
+
+import pytest
+
+
+@pytest.mark.skip(reason="Feature not ready")
+def test_payment():
+    assert 1 == 1
+
+
+@pytest.mark.xfail(reason="Known bug")
+def test_login():
+    assert 1 == 2
+
+
+def test_homepage():
+    assert 1 == 1
+
+Then run:
+
+pytest -v
+
+You should get:
+
+test_payment     SKIPPED
+test_login       XFAIL
+test_homepage    PASSED
+❌ What probably happened
+
+You may have written something like:
+
+pytest.skip(reason="Feature not ready")
+
+at the top of the file.
+
+That is not what we want for this exercise.
+
+There are two different things:
+
+@pytest.mark.skip
+
+➡️ Skip a specific test
+
+while:
+
+pytest.skip(...)
+
+➡️ Skip execution, potentially at module level, when called outside a test.
+

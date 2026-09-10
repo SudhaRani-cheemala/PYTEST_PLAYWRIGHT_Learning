@@ -1,0 +1,7 @@
+. What is Parameterization?
+
+Parameterization means running the same test multiple times with different test data.
+
+For example, suppose you want to test login with 3 different users.
+
+Without parameterization, you might write 3 separate tests:

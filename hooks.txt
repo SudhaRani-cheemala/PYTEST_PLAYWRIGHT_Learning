@@ -1,0 +1,353 @@
+1. What is a Pytest Hook?
+
+A Pytest hook allows us to customize what Pytest does at different stages of test execution.
+
+Think of a test execution like this:
+
+Pytest starts
+     ↓
+Collect tests
+     ↓
+Before test
+     ↓
+Run test
+     ↓
+After test
+     ↓
+Pytest finishes
+
+Hooks allow us to say:
+
+"When Pytest reaches this stage, I want to perform some additional action."
+
+
+2. Where do we normally use Hooks?
+
+Hooks are commonly placed in:
+
+conftest.py
+
+For example:
+
+def pytest_configure(config):
+    print("Pytest is starting")
+
+You don't call this function yourself.
+
+Pytest calls it automatically.
+
+That's the important idea.
+
+3. First Hook: pytest_configure
+
+This hook runs when Pytest is being configured.
+
+Example:
+
+def pytest_configure(config):
+    print("Pytest configuration started")
+
+Put it in conftest.py:
+
+def pytest_configure(config):
+    print("Pytest configuration started")
+
+
+def test_login():
+    assert True
+
+Run:
+
+pytest -s
+
+You'll see your message before the tests execute
+
+Simple meaning:
+pytest_configure
+       ↓
+Configure Pytest
+       ↓
+Run tests
+
+
+4. pytest_sessionstart
+
+This runs when a Pytest test session starts.
+
+def pytest_sessionstart(session):
+    print("Test session started")
+
+Example:
+
+def pytest_sessionstart(session):
+    print("========== Test Session Started ==========")
+
+
+def test_login():
+    assert True
+
+This is useful when you want to perform something at the beginning of the entire test run.
+
+5. pytest_sessionfinish
+
+This runs when the entire Pytest session finishes.
+
+def pytest_sessionfinish(session, exitstatus):
+    print("========== Test Session Finished ==========")
+
+So now:
+
+pytest_sessionstart
+        ↓
+    Tests run
+        ↓
+pytest_sessionfinish
+
+This can be useful for cleanup or generating summary information.
+
+6. pytest_runtest_setup
+This hook runs before each test.
+
+def pytest_runtest_setup(item):
+    print("Before test")
+
+For example:
+
+def pytest_runtest_setup(item):
+    print("Setting up test")
+
+
+def test_login():
+    print("Login test")
+    assert True
+
+Execution:
+
+Setting up test
+      ↓
+Login test
+
+
+7. pytest_runtest_teardown
+
+This hook runs after each test.
+
+def pytest_runtest_teardown(item):
+    print("After test")
+
+Example:
+
+def pytest_runtest_setup(item):
+    print("Before test")
+
+
+def pytest_runtest_teardown(item):
+    print("After test")
+
+
+def test_login():
+    print("Login test")
+    assert True
+
+Execution is roughly:
+Before test
+     ↓
+Login test
+     ↓
+After test
+
+
+8. Very Important: Hook Execution Flow
+
+You don't need to memorize every Pytest hook.
+
+Understand the flow:
+
+                Pytest starts
+                     ↓
+          pytest_sessionstart
+                     ↓
+              Test collection
+                     ↓
+          pytest_runtest_setup
+                     ↓
+                Test runs
+                     ↓
+        pytest_runtest_teardown
+                     ↓
+             More tests...
+                     ↓
+          pytest_sessionfinish
+                     ↓
+               Pytest ends
+
+This is the main concept.
+
+
+9. pytest_collection_modifyitems
+
+This is another useful hook.
+
+It allows us to modify the tests after Pytest discovers them but before they execute.
+
+For example:
+
+def pytest_collection_modifyitems(items):
+    print("Tests collected:", len(items))
+
+Suppose you have:
+
+test_login
+test_logout
+test_payment
+
+
+Pytest collects them first.
+
+The hook can inspect or modify that collection.
+
+This becomes useful for things like:
+
+Adding markers dynamically
+Reordering tests
+Skipping tests based on conditions
+Modifying test metadata
+
+You don't need to master this one yet.
+10. Hooks vs Fixtures
+
+This is very important because you've already learned fixtures.
+
+Fixture
+
+Used to provide setup/data/resources to a test.
+
+@pytest.fixture
+def browser():
+    return "Chrome"
+
+The test explicitly requests it:
+
+def test_login(browser):
+    ...
+Hook
+
+Used to customize Pytest's own execution behavior.
+
+Used to customize Pytest's own execution behavior.
+
+def pytest_runtest_setup(item):
+    print("Before test")
+
+The test does not request the hook.
+
+Pytest calls it automatically.
+
+Easy way to remember
+
+Fixture → Test asks for it.
+
+Hook → Pytest calls it automatically.
+
+11. Hooks + conftest.py
+
+This is where everything you've learned starts connecting.
+
+Your project can look like:
+
+pytest_project/
+│
+├── pytest.ini
+│
+├── conftest.py
+│
+└── tests/
+    ├── test_login.py
+    └── test_payment.py
+
+conftest.py can contain:
+
+import pytest
+
+
+@pytest.fixture
+def employee():
+    return "John"
+
+
+def pytest_runtest_setup(item):
+    print("Starting test")
+
+
+def pytest_runtest_teardown(item):
+    print("Ending test")
+
+So conftest.py can contain both:
+
+Fixtures
+   +
+Hooks
+
+---------------------------
+12. Real Automation Example
+
+Imagine you're building a Playwright framework.
+
+You might eventually have:
+
+def pytest_runtest_setup(item):
+    print("Starting test:", item.name)
+
+
+def pytest_runtest_teardown(item):
+    print("Finished test:", item.name)
+
+If the test is:
+
+def test_login(page):
+    page.goto("https://example.com")
+
+you could see:
+
+Starting test: test_login
+Running Playwright test
+Finished test: test_login
+
+Hooks can therefore help with logging and framework-level behavior
+
+Interview Questions
+Q1. What are Pytest hooks?
+
+"Pytest hooks are predefined functions that allow us to customize Pytest's behavior at different stages of test execution. They are commonly defined in conftest.py."
+
+Q2. Where are Pytest hooks commonly defined?
+
+"They are commonly defined in conftest.py."
+
+Q3. Does the tester call hooks manually?
+
+No.
+
+Pytest automatically invokes them at the appropriate stage.
+
+Q4. What is pytest_runtest_setup?
+
+"It is a hook that runs before each test function."
+
+Q5. What is pytest_runtest_teardown?
+
+"It is a hook that runs after each test function
+
+"It is a hook that runs after each test function."
+
+Q6. What is pytest_sessionstart?
+
+"It runs when the Pytest test session starts."
+
+Q7. What is pytest_sessionfinish?
+
+"It runs when the Pytest test session finishes."
+
+Q8. Fixture vs Hook?
+
+"A fixture provides setup, resources, or data to tests and is requested by the test. A hook customizes Pytest's execution lifecycle and is automatically called by Pytest."
