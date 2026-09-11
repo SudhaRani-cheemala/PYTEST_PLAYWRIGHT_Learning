@@ -1,0 +1,130 @@
+1. Why do we need waits?
+
+Imagine you click Login:
+
+page.get_by_role("button", name="Login").click()
+
+After clicking, the application needs 2 seconds to load the Products page.
+
+Your test immediately tries:
+
+expect(page.get_by_text("Products")).to_be_visible()
+
+If the page isn't ready yet, you might think:
+
+"The element isn't there."
+
+But actually, the application is still loading.
+
+That's why Playwright has waiting mechanisms.
+
+The most important thing: Auto-waiting ⭐
+
+Playwright automatically waits for elements before performing actions.
+
+For example:
+
+page.get_by_role("button", name="Login").click()
+
+Before clicking, Playwright checks whether the button is ready for interaction.
+
+It waits for things such as the element being:
+
+present
+visible
+enabled
+able to receive the action
+
+So normally, you do not need to add a manual wait before every action.
+Example
+page.get_by_placeholder("Username").fill("standard_user")
+
+Playwright automatically waits for the Username field to be ready.
+
+
+3. Why did you get a 30-second TimeoutError?
+
+Earlier you had:
+
+page.locator("input[type='checkbox']").check()
+
+But there was no checkbox on the page.
+
+Playwright waited:
+
+30 seconds
+   ↓
+Could not find checkbox
+   ↓
+TimeoutError ❌
+
+That's auto-waiting too!
+
+Playwright didn't immediately fail. It waited for the element.
+
+But because the element never appeared, it eventually timed out.
+
+
+4. wait_for() ⭐
+
+You can explicitly tell a locator to wait for a specific state.
+
+Example:
+
+page.get_by_text("Products").wait_for()
+
+By default, this waits for the element to become visible.
+
+You can also specify a state:
+
+page.get_by_text("Products").wait_for(state="visible")
+
+Other states include:
+state="attached"
+state="detached"
+state="visible"
+state="hidden"
+
+wait_until
+
+You've already seen this:
+
+page.goto(
+    "https://www.saucedemo.com/",
+    wait_until="domcontentloaded"
+)
+
+wait_until tells Playwright when navigation should be considered complete.
+
+Common options:
+
+domcontentloaded
+page.goto(url, wait_until="domcontentloaded")
+
+Waits until the HTML document has been loaded and parsed.
+
+load
+
+page.goto(url, wait_until="load")
+
+Waits for the page's load event.
+
+For many tests, the default navigation behavior is sufficient, and you don't need to specify this manually.
+
+
+Custom timeout
+
+Sometimes an application genuinely needs more time.
+
+You can specify a timeout:
+
+page.get_by_text("Products").wait_for(
+    state="visible",
+    timeout=10000
+)
+
+10000 = 10 seconds.
+
+If Products doesn't become visible within 10 seconds:
+
+TimeoutError ❌

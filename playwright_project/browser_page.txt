@@ -1,0 +1,216 @@
+1. What is Browser?
+
+In Playwright, Browser represents the actual browser application such as:
+
+Chromium
+Firefox
+WebKit
+
+We launch a browser using:
+
+browser = p.chromium.launch()
+
+Example:
+
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+
+Here:
+
+p
+│
+└── chromium
+      │
+      └── launch()
+              ↓
+          Browser
+
+Simple meaning
+
+Think:
+
+Browser = Chrome application
+
+It is the overall browser instance that Playwright controls.
+
+2. What is Page?
+
+A Page represents a single browser tab.
+
+We create a page using:
+
+page = browser.new_page()
+
+Example:
+browser = p.chromium.launch()
+page = browser.new_page()
+
+Think:
+
+Browser
+│
+├── Page 1 → Google
+│
+├── Page 2 → Amazon
+│
+└── Page 3 → Facebook
+
+So:
+
+Browser = browser application
+Page = tab inside the browser
+
+3. Browser vs Page
+
+This is important for interviews.
+
+Browser	Page
+Represents browser instance	Represents one browser tab
+Created using launch()	Created using new_page()
+Can contain multiple pages	Represents one tab
+Example: Chromium	Example: Google tab
+
+
+Interview answer
+
+Q: What is the difference between Browser and Page in Playwright?
+
+Answer:
+
+Browser represents the browser instance, such as Chromium, Firefox, or WebKit. Page represents a single tab or webpage within that browser.
+
+
+4. Complete Example
+from playwright.sync_api import sync_playwright
+
+def test_open_browser():
+
+    with sync_playwright() as p:
+
+        browser = p.chromium.launch(headless=False)
+
+        page = browser.new_page()
+
+        page.goto("https://example.com")
+
+        print(page.title())
+
+        browser.close()
+
+Let's understand each line.
+
+
+Let's understand each line.
+
+Step 1 — Start Playwright
+with sync_playwright() as p:
+
+This starts the Playwright engine.
+
+Step 2 — Launch browser
+browser = p.chromium.launch(headless=False)
+
+This opens Chromium.
+
+headless=False means:
+If you use:
+
+browser = p.chromium.launch()
+
+the browser normally runs in headless mode, meaning you don't see the browser window.
+
+Step 3 — Create page
+page = browser.new_page()
+
+This creates a new browser tab.
+
+Step 4 — Navigate to website
+page.goto("https://example.com")
+
+This opens the URL in the tab.
+
+Step 5 — Get page title
+print(page.title())
+
+This gets the title of the current webpage.
+
+For example.com, you'll see:
+
+Example Domain
+Step 6 — Close browser
+browser.close()
+
+This closes the browser and its pages.
+
+
+
+5. Browser Context — Important
+
+There is one more concept you should know:
+
+Browser Context
+
+The structure is:
+
+Playwright
+    ↓
+Browser
+    ↓
+Browser Context
+    ↓
+Page
+
+Example:
+browser = p.chromium.launch()
+
+context = browser.new_context()
+
+page = context.new_page()
+
+
+What is Browser Context?
+
+A Browser Context is like an isolated browser session.
+
+It can have its own:
+
+Cookies
+Cache
+Local storage
+Login session
+
+For example:
+
+Browser
+│
+├── Context 1
+│     └── Page → User A
+│
+└── Context 2
+      └── Page → User B
+
+
+
+Most important commands to remember
+Launch Chromium
+browser = p.chromium.launch(headless=False)
+Create page
+page = browser.new_page()
+Open URL
+
+page.goto("https://example.com")
+Get title
+page.title()
+Get URL
+page.url
+Close browser
+browser.close()
+
+
+simply remember:
+
+Browser = Application
+Page = Tab
+Context = Isolated session

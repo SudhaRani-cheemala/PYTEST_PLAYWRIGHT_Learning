@@ -1,0 +1,40 @@
+Alerts are common in web applications and are important for interviews.
+
+There are mainly 3 types you should know:
+
+Alert — simple message with OK
+Confirm — OK / Cancel
+Prompt — asks the user to enter text
+
+There are 3 JavaScript dialog types:
+
+1. Alert — OK only
+
+Example:
+
+I am an alert
+     [ OK ]
+
+Playwright:
+
+dialog.accept()
+2. Confirm — OK / Cancel
+Are you sure?
+[ OK ] [ Cancel ]
+
+For OK:
+
+dialog.accept()
+
+For Cancel:
+
+dialog.dismiss()
+3. Prompt — Enter text
+What is your name?
+[____________]
+[ OK ] [ Cancel ]
+
+Playwright:
+
+dialog.accept("Dimple")
+

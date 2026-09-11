@@ -1,0 +1,115 @@
+Frames / iFrames in Playwright
+1. What is an iframe?
+
+An iframe is a webpage or HTML section embedded inside another webpage.
+
+Think of it like:
+
+Main webpage
+┌─────────────────────────────┐
+│                             │
+│    Main Page                │
+│                             │
+│    ┌───────────────────┐    │
+│    │                   │    │
+│    │     iframe        │    │
+│    │  Text / Button    │    │
+│    │                   │    │
+│    └───────────────────┘    │
+│                             │
+└─────────────────────────────┘
+
+The elements inside the iframe belong to a different document.
+
+Therefore, you generally can't treat them like normal elements on the main page.
+
+Using frame_locator()
+
+The easiest Playwright approach is:
+
+frame = page.frame_locator("iframe")
+
+Then use that frame to find elements inside it.
+
+
+
+Why do we use frame_locator()?
+
+Normally we do:
+
+page.locator("input")
+
+because the input is on the main page.
+
+For an element inside an iframe:
+
+frame.locator("input")
+
+The flow is:
+
+Page
+ ↓
+iframe
+ ↓
+element inside iframe
+
+In Playwright:
+page.frame_locator("iframe").locator("body")
+
+
+Using a specific iframe
+
+If there are multiple iframes, don't just use:
+
+page.frame_locator("iframe")
+
+Instead, use a more specific locator:
+
+page.frame_locator("#my-iframe")
+
+or:
+
+page.frame_locator("iframe[name='myframe']")
+
+
+This helps Playwright identify the correct iframe.
+
+
+Important interview question ⭐
+Q: How do you handle an iframe in Playwright?
+
+A good answer:
+
+In Playwright, we can use frame_locator() to access an iframe and then interact with the elements inside that frame.
+
+Example:
+
+frame = page.frame_locator("iframe")
+
+frame.locator("body").fill("Hello")
+
+
+frame_locator() vs frame()
+
+You may see both approaches.
+
+Recommended beginner approach:
+page.frame_locator("iframe")
+
+It allows you to directly locate elements inside the iframe.
+
+There is also:
+
+page.frame(name="frame_name")
+
+which gives you a Frame object.
+
+For your interview, remember:
+
+iframe
+  ↓
+frame_locator()
+  ↓
+locate element
+  ↓
+perform action

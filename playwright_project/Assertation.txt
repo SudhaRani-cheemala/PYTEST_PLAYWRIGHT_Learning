@@ -1,0 +1,117 @@
+1. What is an Assertion?
+
+An assertion is a verification/check in your test.
+
+It answers:
+
+"Did the application behave as I expected?"
+
+For example, after logging in, you expect the URL to change:
+
+assert page.url == "https://www.saucedemo.com/inventory.html"
+
+If the URL is correct:
+
+PASS ✅
+
+If the URL is different:
+FAIL ❌
+
+So:
+
+Action → Login
+        ↓
+Assertion → Verify login was successful
+
+2. Python assert
+
+Python has a built-in keyword called assert.
+
+Example:
+
+assert 10 == 10
+
+This passes because the condition is true.
+
+assert 10 == 20
+
+This fails because the condition is false.
+
+Example with Playwright
+
+page.goto("https://www.saucedemo.com/")
+
+assert page.title() == "Swag Labs"
+
+Here:
+
+page.title()
+
+gets the actual title.
+
+Then:
+
+== "Swag Labs"
+
+
+checks whether it matches the expected title.
+
+
+What is expect()?
+
+expect() is Playwright's assertion API.
+
+You import it:
+
+from playwright.sync_api import expect
+
+Then:
+
+expect(page).to_have_title("Swag Labs")
+
+means:
+
+"I expect this page to have the title Swag Labs."
+
+Another example:
+
+expect(page.get_by_text("Products")).to_be_visible()
+
+
+means:
+
+"I expect the Products element to be visible."
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+Consider these two:
+
+Python assert
+assert page.title() == "Swag Labs"
+Playwright expect
+expect(page).to_have_title("Swag Labs")
+
+Both are checking something.
+
+But Playwright's expect() provides web-first assertions that automatically wait for the expected condition within the assertion timeout.
+
+For example:
+expect(page.get_by_text("Products")).to_be_visible()
+
+Playwright can wait for the element to become visible rather than immediately checking once.
+
+This is especially useful for modern web applications where elements may appear after some time
+
+
+|                   | Python `assert`    | Playwright `expect()`                     |
+| ----------------- | ------------------ | ----------------------------------------- |
+| What is it?       | Python keyword     | Playwright assertion API                  |
+| Purpose           | Verify a condition | Verify UI/page conditions                 |
+| Automatic waiting | ❌ No               | ✅ Yes, for supported web-first assertions |
+| Good for UI state | Basic              | ⭐ Excellent                               |
+| Example           | `assert x == 10`   | `expect(page).to_have_title(...)`         |
+
+
+
