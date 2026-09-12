@@ -1,0 +1,60 @@
+🔄 Sync API
+Definition: Sync API means Playwright commands run one after another, in a blocking way.
+
+Usage: Easier for beginners because you don’t need to worry about async/await.
+
+Import:
+
+python
+from playwright.sync_api import sync_playwright
+Example:
+
+python
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+    page.goto("https://example.com")
+    print(page.title())
+    browser.close()
+
+Each line waits until the previous one finishes.
+
+-------------------------------------------
+
+
+Async API
+Definition: Async API uses Python’s asyncio framework. Commands don’t block; they run asynchronously.
+
+Usage: More powerful for advanced workflows (parallel tasks, faster execution).
+
+Import:
+
+python
+from playwright.async_api import async_playwright
+Example:
+
+python
+import asyncio
+from playwright.async_api import async_playwright
+
+async def run():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=False)
+        page = await browser.new_page()
+        await page.goto("https://example.com")
+        print(await page.title())
+        await browser.close()
+asyncio.run(run())
+
+
+Here you must use await for every Playwright command.
+
+
+Key Differences
+Sync API	Async API
+Easier for beginners	Requires knowledge of asyncio
+Commands run one after another	Commands can run concurrently
+Slower for large test suites	Faster, scales better
+Best for small/medium projects	Best for advanced, high-performance projects

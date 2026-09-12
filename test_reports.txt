@@ -1,0 +1,139 @@
+1. Understand normal pytest output
+First, run:
+
+pytest
+
+You'll see something like:
+
+================ test session starts ================
+
+test_login.py::test_valid_login PASSED
+test_login.py::test_invalid_login FAILED
+test_home.py::test_title PASSED
+
+================ 2 passed, 1 failed ================
+
+Understand what PASSED, FAILED, SKIPPED, ERROR mean.
+
+2. Learn pytest command-line reporting
+Then learn these:
+
+pytest -v
+
+-v = verbose output.
+
+pytest -rA
+
+Shows a summary of all test results.
+
+pytest --tb=short
+
+Gives a shorter error/traceback.
+
+Don't worry about memorizing everything. Understand what each option does.
+
+3. Learn JUnit XML
+Once you understand terminal reports:
+
+pytest --junitxml=report.xml
+
+This creates an XML report.
+
+Why is this useful?
+
+Because tools such as CI/CD systems can read this report and show your test results.
+
+Conceptually:
+
+Pytest
+   ↓
+Tests execute
+   ↓
+Results
+   ↓
+report.xml
+   ↓
+Jenkins / GitHub Actions / CI tool
+
+4. Learn HTML reporting
+After XML, learn pytest-html.
+
+Install:
+
+pip install pytest-html
+
+Run:
+
+pytest --html=report.html
+
+Now you get a report that you can open in a browser.
+
+You'll see things like:
+
+Test Name             Result
+--------------------------------
+test_login            PASSED
+test_logout           PASSED
+test_payment          FAILED
+
+This is much easier for humans to read.
+
+5. Then learn Allure
+Only after you understand the above, move to Allure.
+
+Allure gives you a much richer report with things like:
+
+Test status
+Test steps
+Test duration
+Screenshots
+Logs
+Test descriptions
+Test categories
+For automation testing, Allure is a very useful skill.
+
+Your roadmap
+Since you've already completed pytest hooks, I'd suggest:
+
+Pytest Basics
+     ↓
+Fixtures
+     ↓
+Parametrization
+     ↓
+Markers
+     ↓
+Hooks          ← YOU ARE HERE
+     ↓
+Reporting Basics
+     ↓
+JUnit XML
+     ↓
+HTML Reporting
+     ↓
+Allure
+     ↓
+Screenshots + Logs
+     ↓
+CI/CD Reporting
+
+For today, learn only this
+Start with pytest's built-in reporting.
+
+Learn:
+
+pytest
+pytest -v
+pytest -rA
+pytest --tb=short
+
+Then practice with 3–5 simple tests and intentionally make one test fail so you can understand what pytest reports.
+
+Once you're comfortable with that, move to JUnit XML.
+
+"
+HTML → mainly for humans 👨‍💻
+XML  → mainly for tools/CI systems 🤖
+
+
+"

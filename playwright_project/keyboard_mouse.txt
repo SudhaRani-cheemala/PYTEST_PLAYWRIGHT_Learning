@@ -1,0 +1,288 @@
+1. 🖱️ Mouse & Keyboard Actions
+
+Playwright provides mouse and keyboard actions for interacting with web elements.
+
+A. Mouse actions
+1. Click
+
+You already know:
+
+page.locator("#login").click()
+2. Double click
+page.locator("#item").dblclick()
+
+Use when an application requires double-clicking an element.
+
+3. Right click
+page.locator("#item").click(button="right")
+
+This performs a right-click.
+
+
+4. Hover
+
+Very important for menus.
+
+page.locator("#menu").hover()
+
+Example:
+
+page.locator("#products").hover()
+page.get_by_text("Laptops").click()
+
+Typical scenario:
+
+Products
+   ↓ hover
+Laptops
+Mobiles
+Accessories
+
+
+5. Mouse movement
+
+Playwright also has a mouse object:
+
+page.mouse.move(500, 300)
+
+This moves the mouse to coordinates.
+
+6. Mouse click using coordinates
+page.mouse.click(500, 300)
+
+You normally prefer locators over coordinates because coordinates can change when the UI changes.
+
+
+7. Drag and drop
+
+Very useful interview topic.
+
+The easiest approach:
+
+page.locator("#source").drag_to(page.locator("#target"))
+
+Example:
+
+page.locator("#box1").drag_to(page.locator("#box2"))
+
+Meaning:
+
+Box 1  ─────drag────>  Box 2
+
+----------------------------------------------------------------------------------------------------------
+
+Keyboard Actions
+1. Press a key
+page.locator("#username").press("Enter")
+
+For example:
+
+page.locator("#search").fill("Playwright")
+page.locator("#search").press("Enter")
+
+2. Keyboard shortcuts
+
+You can use:
+
+page.keyboard.press("Control+A")
+
+Then:
+
+page.keyboard.press("Backspace")
+
+On Windows, common examples are:
+
+page.keyboard.press("Control+A")
+page.keyboard.press("Control+C")
+page.keyboard.press("Control+V")
+
+3. Type using keyboard
+
+You can use:
+
+page.keyboard.type("Hello Playwright")
+
+But for normal input fields, prefer:
+
+page.locator("#username").fill("Dimple")
+
+because fill() is simpler and reliable.
+
+
+Mouse & Keyboard — Remember These
+click       → click
+dblclick    → double click
+hover       → move over element
+right click → click(button="right")
+drag_to     → drag element
+press       → press keyboard key
+keyboard    → keyboard operations
+Most important for interview:
+locator.click()
+locator.dblclick()
+locator.hover()
+locator.click(button="right")
+locator.drag_to()
+locator.press("Enter")
+page.keyboard.press("Control+A")
+
+
+2. 📁 File Upload & Download
+
+This is another very common automation scenario.
+
+A. File Upload
+
+Suppose your website has:
+
+Upload Resume
+
+[ Choose File ]
+
+In Playwright, you can use:
+
+page.locator("input[type='file']").set_input_files("resume.pdf")
+
+That's the basic concept.
+
+
+Complete example
+from playwright.sync_api import sync_playwright
+
+def test_upload():
+
+    with sync_playwright() as p:
+
+        browser = p.chromium.launch(headless=False)
+
+        page = browser.new_page()
+
+        page.goto("https://example.com")
+
+        page.locator("input[type='file']").set_input_files(
+            "C:/Users/DELL/Desktop/resume.pdf"
+        )
+
+        browser.close()
+
+
+        The important method is:
+
+set_input_files()
+
+
+Upload using expect_file_chooser
+
+Sometimes clicking a button opens the Windows file chooser.
+
+In that situation:
+
+with page.expect_file_chooser() as file_chooser_info:
+    page.get_by_text("Upload").click()
+
+file_chooser = file_chooser_info.value
+
+file_chooser.set_files("resume.pdf")
+
+Think:
+
+Click Upload
+     ↓
+File chooser appears
+     ↓
+Playwright captures it
+     ↓
+set_files()
+
+. File Download
+
+Suppose the website has:
+
+[ Download Report ]
+
+We want Playwright to capture the downloaded file.
+
+Use:
+
+with page.expect_download() as download_info:
+    page.get_by_text("Download Report").click()
+
+download = download_info.value
+
+Then save it:
+
+download.save_as("report.pdf")
+
+
+Complete download example
+from playwright.sync_api import sync_playwright
+
+def test_download():
+
+    with sync_playwright() as p:
+
+        browser = p.chromium.launch(headless=False)
+
+        page = browser.new_page()
+
+        page.goto("https://example.com")
+
+        with page.expect_download() as download_info:
+            page.get_by_text("Download Report").click()
+
+        download = download_info.value
+
+        download.save_as(
+            "C:/Users/DELL/Desktop/report.pdf"
+        )
+
+        browser.close()
+
+
+        | Task                     | Playwright              |
+| ------------------------ | ----------------------- |
+| Upload directly          | `set_input_files()`     |
+| Upload with file chooser | `expect_file_chooser()` |
+| Download                 | `expect_download()`     |
+| Save downloaded file     | `save_as()`             |
+
+
+
+UPLOAD
+   ↓
+set_input_files()
+
+DOWNLOAD
+   ↓
+expect_download()
+   ↓
+save_as()
+
+
+Interview Questions
+Q1. How do you upload a file in Playwright?
+
+Answer:
+
+We can use set_input_files() on the file input element.
+
+page.locator("input[type='file']").set_input_files("resume.pdf")
+Q2. How do you handle a file download?
+
+Answer:
+
+We use page.expect_download() to capture the download and then save_as() to save the file.
+
+with page.expect_download() as download_info:
+    page.get_by_text("Download").click()
+
+download = download_info.value
+download.save_as("report.pdf")
+
+
+How do you handle a file chooser?
+with page.expect_file_chooser() as file_chooser_info:
+    page.get_by_text("Upload").click()
+
+file_chooser = file_chooser_info.value
+file_chooser.set_files("resume.pdf")

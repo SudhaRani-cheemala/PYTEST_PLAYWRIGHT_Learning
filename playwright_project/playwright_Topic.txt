@@ -1,0 +1,360 @@
+Topics covered
+Mouse actions
+Keyboard actions
+File upload
+File download
+Dropdowns
+Checkbox
+Radio button
+Alerts/dialogs
+Multiple tabs
+Browser context
+Tables
+Dynamic elements
+Screenshots
+Browser types
+Headless vs headed
+
+create:
+test_playwright_topics.py
+
+
+Now understand the important concepts
+
+Don't try to memorize that entire script. Understand the syntax patterns.
+
+1️⃣ Mouse Actions
+Click
+page.locator("#button").click()
+Double-click
+page.locator("#button").dblclick()
+Right-click
+
+page.locator("#button").click(button="right")
+
+
+Hover
+page.locator("#menu").hover()
+Drag and drop
+page.locator("#source").drag_to(
+    page.locator("#target")
+)
+Remember
+click()
+dblclick()
+hover()
+click(button="right")
+drag_to()
+
+Keyboard Actions
+Press Enter
+page.locator("#search").press("Enter")
+Keyboard shortcut
+page.keyboard.press("Control+A")
+Other examples
+page.keyboard.press("Escape")
+page.keyboard.press("Control+C")
+page.keyboard.press("Control+V")
+
+Remember
+locator.press()
+page.keyboard.press()
+
+File Upload
+
+If your HTML contains:
+
+<input type="file">
+
+Use:
+
+page.locator("input[type='file']").set_input_files(
+    "resume.pdf"
+)
+
+
+Upload → set_input_files()
+
+
+File Download
+with page.expect_download() as download_info:
+    page.get_by_text("Download").click()
+
+download = download_info.value
+
+download.save_as("report.pdf")
+Remember
+expect_download()
+      ↓
+download
+      ↓
+save_as()
+
+
+Dropdown
+
+For a normal HTML dropdown:
+
+page.locator("#country").select_option("India")
+
+Or:
+
+page.locator("#country").select_option(
+    label="India"
+)
+Remember
+<select>
+    ↓
+select_option()
+
+
+Checkbox
+
+Check:
+
+page.locator("#terms").check()
+
+Uncheck:
+
+page.locator("#terms").uncheck()
+Remember
+check()
+uncheck()
+
+
+Radio Button
+page.locator("#male").check()
+
+Radio buttons normally allow you to select one option from a group.
+
+8️⃣ Alerts / Dialogs
+
+Suppose clicking a button produces:
+
+Are you sure?
+[OK] [Cancel]
+
+Accept:
+
+page.on(
+    "dialog",
+    lambda dialog: dialog.accept()
+)
+
+Dismiss:
+
+page.on(
+    "dialog",
+    lambda dialog: dialog.dismiss()
+)
+Remember
+accept()  → OK
+dismiss() → Cancel
+9️⃣ Multiple Tabs
+
+This is important.
+
+If an action opens a new tab:
+
+with context.expect_page() as page_info:
+
+    page.click("#open-tab")
+
+new_page = page_info.value
+
+Now:
+
+page      → first tab
+new_page  → second tab
+
+Then:
+
+print(new_page.url)
+print(new_page.title())
+Remember
+New tab → context.expect_page()
+
+Don't use expect_page() when the link simply navigates the same page.
+
+🔟 Browser Context
+
+Think:
+
+Browser
+   ↓
+Context
+   ↓
+Page
+
+Code:
+
+browser = p.chromium.launch()
+
+context = browser.new_context()
+
+page = context.new_page()
+
+A context provides an isolated browser session.
+
+1️⃣1️⃣ Tables
+
+Suppose:
+
+<table>
+   <tr>...</tr>
+   <tr>...</tr>
+</table>
+
+Find rows:
+
+rows = page.locator("table tbody tr")
+
+Count them:
+
+rows.count()
+
+Get first row:
+
+rows.nth(0)
+
+Get its text:
+
+rows.nth(0).inner_text()
+Remember
+count() → number
+nth(0)  → first element
+inner_text() → text
+1️⃣2️⃣ Dynamic Elements
+
+Dynamic elements can change between executions.
+
+Instead of fragile XPath like:
+
+//div[3]/div[2]/button
+
+prefer:
+
+page.get_by_role("button", name="Login")
+
+or:
+
+page.get_by_text("Login")
+
+or:
+
+page.get_by_label("Username")
+Interview point
+
+Use stable and meaningful locators rather than relying on changing DOM positions.
+
+1️⃣3️⃣ Screenshot
+
+Normal screenshot:
+
+page.screenshot(path="home.png")
+
+Full page:
+
+page.screenshot(
+    path="home.png",
+    full_page=True
+)
+
+Useful when debugging failed tests.
+
+1️⃣4️⃣ Browser Types
+
+Playwright supports:
+
+p.chromium
+p.firefox
+p.webkit
+
+Example:
+
+browser = p.chromium.launch()
+
+Change it to:
+
+browser = p.firefox.launch()
+
+or:
+
+browser = p.webkit.launch()
+1️⃣5️⃣ Headless vs Headed
+Headed
+
+You can see the browser:
+
+browser = p.chromium.launch(
+    headless=False
+)
+Headless
+
+Browser runs without showing the UI:
+
+browser = p.chromium.launch(
+    headless=True
+)
+Remember
+headless=False → browser visible
+headless=True  → browser hidden
+⭐ Your interview cheat sheet
+
+If you remember only these, you're in good shape for this section:
+
+Mouse
+  click()
+  dblclick()
+  hover()
+  drag_to()
+
+Keyboard
+  press()
+  keyboard.press()
+
+Upload
+  set_input_files()
+
+Download
+  expect_download()
+  save_as()
+
+Dropdown
+  select_option()
+
+Checkbox
+  check()
+  uncheck()
+
+Radio
+  check()
+
+Alert
+  accept()
+  dismiss()
+
+New Tab
+  context.expect_page()
+
+Context
+  browser.new_context()
+
+Table
+  count()
+  nth()
+  inner_text()
+
+Dynamic Elements
+  stable locators
+
+Screenshot
+  screenshot()
+
+Browser
+  chromium
+  firefox
+  webkit
+
+Headless
+  True / False

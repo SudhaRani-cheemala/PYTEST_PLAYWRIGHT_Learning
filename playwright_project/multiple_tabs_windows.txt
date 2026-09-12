@@ -1,0 +1,108 @@
+1. First understand the problem
+
+Imagine you are on a website:
+
+Main Tab
+   |
+   | Click "Terms & Conditions"
+   ↓
+New Tab opens
+
+So now you have:
+
+Tab 1 → Main website
+Tab 2 → Terms & Conditions
+
+In Selenium, you normally hear about window handles and switch_to.window().
+
+In Playwright, it is much simpler:
+
+Every tab is a Page object.
+
+That's the most important thing to remember.
+
+
+2. What is a Page?
+
+When you write:
+
+page = context.new_page()
+
+you are creating one browser tab.
+
+Think:
+
+Browser
+   ↓
+Context
+   ↓
+Page
+
+For example:
+
+page = context.new_page()
+
+means:
+
+Page = Tab 1
+
+
+3. What happens when a second tab opens?
+
+Suppose Tab 1 has a button:
+
+[ Open New Tab ]
+
+When you click it:
+
+Tab 1                    Tab 2
+------                   ------
+Main website             New website
+
+Playwright creates another Page object.
+
+So:
+
+page      → Tab 1
+new_page  → Tab 2
+
+4. How do we capture the new tab?
+
+This is the important syntax:
+
+with context.expect_page() as page_info:
+    page.click("button")
+
+new_page = page_info.value
+
+Step 1
+with context.expect_page() as page_info:
+
+You are telling Playwright:
+
+"I am about to do something that should open a new tab. Please wait and capture that new tab."
+
+Step 2
+page.click("button")
+
+You click the button.
+
+Step 3
+
+The new tab opens.
+
+Step 4
+new_page = page_info.value
+
+
+Now new_page contains the new tab.
+
+So:
+
+page
+ ↓
+Tab 1
+
+new_page
+ ↓
+Tab 2

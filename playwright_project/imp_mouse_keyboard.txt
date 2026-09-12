@@ -1,0 +1,28 @@
+Most important syntax to memorize
+
+You don't need to memorize the whole script.
+
+Remember these:
+
+locator.click()
+locator.dblclick()
+locator.click(button="right")
+locator.hover()
+locator.press("Enter")
+page.keyboard.press("Control+A")
+source.drag_to(target)
+Your practical checklist
+
+Run your script and make sure you understand:
+
+✅ click()
+✅ fill()
+✅ press()
+✅ hover()
+✅ dblclick()
+✅ right-click
+✅ keyboard shortcuts
+✅ drag_to()
+
+Once these are clear, don't spend more time on Mouse & Keyboard. Move to File Upload & Download, then we'll keep going rapidly through the remaining Playwright topics so you can reach the interview-question phase before September 26.
+

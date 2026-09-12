@@ -201,3 +201,42 @@ pytest_project/
     └── test_search.py
 
 This is the clean structure we'll use when we build your automation framework.
+
+
+Interview Questions
+Q1. What is pytest.ini?
+
+"pytest.ini is a configuration file used to configure Pytest execution. It can be used to define test paths, default command-line options, custom markers, and other Pytest settings."
+
+Q2. What is addopts?
+
+"addopts allows us to define default command-line options that Pytest should use whenever tests are executed."
+
+Example:
+
+addopts = -v -s
+Q3. What is testpaths?
+
+"testpaths specifies the directories where Pytest should look for test files."
+
+Example:
+
+Example:
+
+addopts = -v -s
+Q3. What is testpaths?
+
+"testpaths specifies the directories where Pytest should look for test files."
+
+Example:
+
+testpaths = tests
+Q4. Why do we register markers in pytest.ini?
+
+"To tell Pytest about custom markers and avoid PytestUnknownMarkWarning."
+
+Example:
+
+markers =
+    smoke: smoke tests
+    regression: regression tests
